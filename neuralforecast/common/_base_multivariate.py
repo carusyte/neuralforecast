@@ -5,6 +5,7 @@ __all__ = ['BaseMultivariate']
 
 # %% ../../nbs/common.base_multivariate.ipynb 5
 import numpy as np
+import ml_dtypes
 import torch
 import torch.nn as nn
 import pytorch_lightning as pl
