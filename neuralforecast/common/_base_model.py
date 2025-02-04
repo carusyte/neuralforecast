@@ -16,6 +16,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import pytorch_lightning as pl
+from pytorch_lightning.tuner.tuning import Tuner
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from neuralforecast.tsdataset import (
     TimeSeriesDataModule,
@@ -366,7 +367,6 @@ class BaseModel(pl.LightningModule):
         if "enable_lr_find" in self.trainer_kwargs:
             enable_lr_find = self.trainer_kwargs.pop("enable_lr_find")
             if enable_lr_find:
-                from lightning.pytorch.tuner import Tuner
                 trainer = pl.Trainer(**self.trainer_kwargs)
                 tuner = Tuner(trainer)
                 lr_finder = tuner.lr_find(self, datamodule=datamodule)
