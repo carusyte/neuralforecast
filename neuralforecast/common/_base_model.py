@@ -369,7 +369,7 @@ class BaseModel(pl.LightningModule):
                 from lightning.pytorch.tuner import Tuner
                 trainer = pl.Trainer(**self.trainer_kwargs)
                 tuner = Tuner(trainer)
-                lr_finder = tuner.lr_find(self)
+                lr_finder = tuner.lr_find(self, datamodule=datamodule)
                 self.learning_rate = lr_finder.suggestion()
 
         if is_local:
