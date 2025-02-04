@@ -385,10 +385,6 @@ class BaseModel(pl.LightningModule):
                 val_size,
                 test_size,
             )
-
-        if enable_lr_find:
-            model.trainer_kwargs["enable_lr_find"] = enable_lr_find
-
         return model
 
     def on_fit_start(self):
