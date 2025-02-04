@@ -364,14 +364,13 @@ class BaseModel(pl.LightningModule):
 
         enable_lr_find = None
         if "enable_lr_find" in self.trainer_kwargs:
-            enable_lr_find = self.trainer_kwargs["enable_lr_find"]
+            enable_lr_find = self.trainer_kwargs.pop("enable_lr_find")
             if enable_lr_find:
                 from lightning.pytorch.tuner import Tuner
                 trainer = pl.Trainer(**self.trainer_kwargs)
                 tuner = Tuner(trainer)
                 lr_finder = tuner.lr_find(self)
                 self.learning_rate = lr_finder.suggestion()
-                self.trainer_kwargs.pop("enable_lr_find")
 
         if is_local:
             model = self
@@ -389,7 +388,7 @@ class BaseModel(pl.LightningModule):
 
         if enable_lr_find:
             model.trainer_kwargs["enable_lr_find"] = enable_lr_find
-            
+
         return model
 
     def on_fit_start(self):
