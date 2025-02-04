@@ -362,12 +362,16 @@ class BaseModel(pl.LightningModule):
         self.trainer_kwargs["val_check_interval"] = int(val_check_interval)
         self.trainer_kwargs["check_val_every_n_epoch"] = None
 
-        if not self.learning_rate:
-            from lightning.pytorch.tuner import Tuner
-            trainer = pl.Trainer(**self.trainer_kwargs)
-            tuner = Tuner(trainer)
-            lr_finder = tuner.lr_find(self)
-            self.learning_rate = lr_finder.suggestion()
+        enable_lr_find = None
+        if "enable_lr_find" in self.trainer_kwargs:
+            enable_lr_find = self.trainer_kwargs["enable_lr_find"]
+            if enable_lr_find:
+                from lightning.pytorch.tuner import Tuner
+                trainer = pl.Trainer(**self.trainer_kwargs)
+                tuner = Tuner(trainer)
+                lr_finder = tuner.lr_find(self)
+                self.learning_rate = lr_finder.suggestion()
+                self.trainer_kwargs.pop("enable_lr_find")
 
         if is_local:
             model = self
@@ -382,6 +386,10 @@ class BaseModel(pl.LightningModule):
                 val_size,
                 test_size,
             )
+
+        if enable_lr_find:
+            model.trainer_kwargs["enable_lr_find"] = enable_lr_find
+            
         return model
 
     def on_fit_start(self):
